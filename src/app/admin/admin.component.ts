@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import {AbstractControl, UntypedFormArray, UntypedFormBuilder, UntypedFormControl, Validators} from '@angular/forms';
+import {AbstractControl, FormArray, FormBuilder, FormControl, Validators} from '@angular/forms';
 import {Author, Book} from '../books/model/book';
 import {BooksService} from '../books/service/books.service';
 
-function categoryValidator(control: UntypedFormControl): { [s: string]: boolean } | null {
+function categoryValidator(control: FormControl<string>): { [s: string]: boolean } | null {
   const validCategories = ['Kids', 'Tech', 'Cook'];
   if (!validCategories.includes(control.value)) {
     return {invalidCategory: true};
@@ -45,11 +45,11 @@ export class AdminComponent implements OnInit {
     return <AbstractControl>this.bookForm.get('cost');
   }
 
-  get authors(): UntypedFormArray {
-    return this.bookForm.get('authors') as UntypedFormArray;
+  get authors(): FormArray {
+    return this.bookForm.get('authors') as FormArray;
   }
 
-  constructor(private builder: UntypedFormBuilder,
+  constructor(private builder: FormBuilder,
               private booksService: BooksService) {
   }
 
@@ -69,13 +69,13 @@ export class AdminComponent implements OnInit {
 
   onSubmit(): void {
     const book = new Book(0,
-      this.bookForm.value.category,
-      this.bookForm.value.title,
+      <string>this.bookForm.value.category,
+      <string>this.bookForm.value.title,
       Number(this.bookForm.value.cost),
       [],
       Number(this.bookForm.value.year),
-      this.bookForm.value.description);
-    const authors = this.bookForm.value.authors;
+      <string>this.bookForm.value.description);
+    const authors = <Author[]>this.bookForm.value.authors;
     this.booksService.addBook(book).subscribe(
       (response) => {
         authors.forEach(
