@@ -1,36 +1,14 @@
-import {Component, OnDestroy} from '@angular/core';
-import { Author } from '../../models';
-import {catchError, delay, identity, map, of, startWith, Subscription, switchMap} from "rxjs";
-import {ActivatedRoute} from "@angular/router";
-import {BooksService} from "../../books.service";
-
-const DEBUG = false;
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-author',
   templateUrl: './author.component.html',
-  styleUrls: ['./authors.component.scss']
+  styleUrls: ['./author.component.css']
 })
-export class AuthorComponent implements OnDestroy {
-  protected author: Readonly<Author> | undefined | null = void 0;
-  private readonly sub: Subscription = new Subscription();
+export class AuthorComponent {
 
-  constructor(private route: ActivatedRoute, private books: BooksService) {
-  }
-
-  ngOnInit(): void {
-    this.sub.add(this.route.params.pipe(
-      map(x => "" + x["id"]),
-      // switchMap avoids memory leaks
-      switchMap(x => this.books.getAuthor(x).pipe(
-        !DEBUG ? identity : delay(1000),
-        startWith(undefined),
-        catchError(_ => of(null)),
-      )),
-    ).subscribe(x => this.author = x));
-  }
-
-  ngOnDestroy(): void {
-    this.sub.unsubscribe();
-  }
 }
+
+
+
+
